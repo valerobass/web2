@@ -65,8 +65,15 @@ Vagrant.configure("2") do |config|
 
       cp -v /vagrant/config/tierra/apache2.conf /etc/apache2
 
+      #certificados
+
+      cp -v /vagrant/ssl/certificado.crt /etc/ssl/certs/
+      sudo cp -v /vagrant/ssl/private.key /etc/ssl/private/
+
       # TODO: Configurar sitio virtual
       cp -v /vagrant/config/tierra/discovery.sistema.sol.conf /etc/apache2/sites-available
+      cp -v /vagrant/config/tierra/https.conf /etc/apache2/sites-available
+      
 
       # Copiar los recursos de nuestra web al Document Root
       # TODO
@@ -77,6 +84,7 @@ Vagrant.configure("2") do |config|
       # TODO
       a2dissite 000-default.conf
       a2ensite discovery.sistema.sol
+      a2ensite https.conf
 
       # Habilitar módulos necesarios
       # TODO
@@ -84,13 +92,16 @@ Vagrant.configure("2") do |config|
       a2enmod auth_basic
       a2enmod auth_digest
       a2enmod authz_groupfile
+      a2enmod ssl
+
+      systemctl restart apache2
 
       # Copiar ficheros de configuración de la autenticación
       # TODO
      cp -v /vagrant/config/tierra/.htgroups  /etc/apache2/.htgroups 
      cp -v /vagrant/config/tierra/.htpasswd_basic  /etc/apache2/.htpasswd_basic
      cp -v /vagrant/config/tierra/.htpasswd_digest  /etc/apache2/.htpasswd_digest
-     #cp -v /vagrant/config/tierra/discovery.sistema.sol/digest/hello.html /var/www/discovery.sistema.sol/digest
+     
      
 
       systemctl restart apache2
